@@ -1,0 +1,32 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local data / exports - do not commit real exports
+*.xlsx
+*.xls
+*.csv
+*.tsv
+*.zip
+*.7z
+*.tar
+*.gz
+
+# Screenshots and local notes that may contain internal data
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.pdf
+local_notes/
+exports/
+sharepoint_exports/
+sap_exports/
