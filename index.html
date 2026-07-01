@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Supplier 360 SRM Dashboard</title>
+    <link rel="stylesheet" href="style.css?v=20260630-edit-actions" />
+  </head>
+
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-icon">S</div>
+          <div>
+            <div class="brand-title">Supplier 360</div>
+            <div class="brand-subtitle">SRM / Supplier Management</div>
+          </div>
+        </div>
+
+        <label class="search-field" for="globalSearch">
+          <span>⌕</span>
+          <input id="globalSearch" type="text" placeholder="Search supplier name or ID" />
+        </label>
+
+        <div class="topbar-actions">
+          <!-- <button class="action-button">+ New</button> -->
+          <div class="user-chip">AL</div>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <div class="section-label">Supplier Portal</div>
+            <nav class="nav-list">
+              <a class="nav-item active" href="#">Dashboard</a>
+              <a class="nav-item" href="#">Supplier Profiles</a>
+              <a class="nav-item" href="#">RFx & Requests</a>
+              <a class="nav-item" href="#">Contracts</a>
+              <a class="nav-item" href="#">Compliance</a>
+            </nav>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-label">Supplier Selector</div>
+            <div id="supplierList" class="supplier-list"></div>
+          </div>
+        </aside>
+
+        <main class="content-area">
+          <!-- <section class="supplier-commandbar" aria-label="Supplier command bar">
+            <div class="command-actions">
+              <button class="command-button primary" type="button" data-command="edit-supplier">
+                Edit Supplier
+              </button>
+
+              <button class="command-button" type="button" data-command="add-contact">
+                Add Contact
+              </button>
+
+              <button class="command-button" type="button" data-command="add-activity">
+                Add Activity
+              </button>
+
+              <button class="command-button" type="button" data-command="export-summary">
+                Export SRM Summary
+              </button>
+
+              <button class="command-button secondary" type="button" data-command="refresh">
+                Refresh
+              </button>
+            </div>
+
+            <div id="commandFeedback" class="command-feedback">
+              Select an action to continue.
+            </div>
+          </section> -->
+          
+          <section class="profile-card">
+            <div class="profile-heading">
+              <div class="avatar" id="supplierAvatar">OG</div>
+
+              <div>
+                <div class="profile-title-row">
+                  <h1 id="supplierName">Supplier Name</h1>
+                  <span id="supplierStatus" class="status-pill approved">Approved</span>
+                </div>
+                <p id="supplierSubtitle" class="profile-subtitle">Supplier overview</p>
+              </div>
+            </div>
+
+            <div class="profile-metrics">
+              <div class="metric-pill">
+                <span class="metric-label">Supplier ID</span>
+                <strong id="supplierId">-</strong>
+              </div>
+
+              <div class="metric-pill">
+                <span class="metric-label">Countries</span>
+                <strong id="supplierCountries">-</strong>
+              </div>
+
+              <div class="metric-pill">
+                <span class="metric-label">Material groups</span>
+                <strong id="supplierMaterialCount">-</strong>
+              </div>
+
+              <div class="metric-pill">
+                <span class="metric-label">Agency / Owner</span>
+                <strong id="supplierOwner">-</strong>
+              </div>
+            </div>
+          </section>
+
+          <div class="tab-bar" role="tablist" aria-label="Supplier tabs">
+            <button class="tab-button" data-tab="overview">Overview</button>
+            <button class="tab-button" data-tab="details">Details</button>
+            <button class="tab-button" data-tab="sap-master">SAP Master Data</button>
+            <button class="tab-button" data-tab="extra-info">Extra Info</button>
+            <button class="tab-button" data-tab="material-groups">Material Groups</button>
+            <button class="tab-button" data-tab="contacts">Contacts</button>
+            <button class="tab-button" data-tab="activities">Relationship Traces</button>
+            <button class="tab-button" data-tab="performance">Performance</button>
+          </div>
+
+          <section id="overview" class="tab-panel active">
+            <div id="supplierInsightStrip" class="insight-strip"></div>
+
+            <div class="overview-grid">
+              <article class="card">
+                <div class="card-title">Master Data</div>
+                <div id="masterData" class="info-list"></div>
+              </article>
+
+              <article class="card">
+                <div class="card-title">Activities Timeline</div>
+                <ul id="activityTimeline" class="timeline"></ul>
+              </article>
+
+              <article class="card">
+                <div class="card-title">Contacts Panel</div>
+                <div id="overviewContacts" class="stack-list"></div>
+              </article>
+            </div>
+          </section>
+
+          <section id="details" class="tab-panel">
+            <div class="details-grid">
+              <article class="card">
+                <div class="card-title">Operational Details</div>
+                <div id="detailsList" class="info-list"></div>
+              </article>
+
+              <article class="card">
+                <div class="card-title">Compliance Snapshot</div>
+                <div id="complianceList" class="info-list"></div>
+              </article>
+            </div>
+          </section>
+          <section id="sap-master" class="tab-panel">
+            <article class="card">
+              <div class="card-title">Supplier Master / SAP Data</div>
+
+              <div class="extra-info-note">
+                This tab represents the supplier master list fields that can be maintained from SAP export or SharePoint:
+                Supplier ID, supplier name, status, country of origin, GGN, GLN, and owner/agency coverage.
+              </div>
+
+              <div class="tab-local-actions">
+                <button id="openSapMasterFormButton" class="command-button primary" type="button" onclick="openSapMasterForm()">
+                  Edit Supplier Master Data
+                </button>
+              </div>
+
+              <form id="sapMasterForm" class="inline-form-card" hidden>
+                <div class="inline-form-header">
+                  <div>
+                    <div class="inline-form-title">Edit Supplier Master Data</div>
+                    <div class="inline-form-subtitle">Update SAP-exportable master data for the selected supplier.</div>
+                  </div>
+                  <button class="inline-close-button" type="button" data-close-form>×</button>
+                </div>
+
+                <div class="inline-form-grid">
+                  <label class="form-field">
+                    <span>Supplier ID / SAP ID</span>
+                    <input id="sapSupplierId" type="text" readonly />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Supplier Name</span>
+                    <input id="sapSupplierName" type="text" placeholder="Supplier legal name" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Status</span>
+                    <select id="sapSupplierStatus">
+                      <option value="Approved">Approved</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Needs Review">Needs Review</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                  </label>
+
+                  <label class="form-field">
+                    <span>Country of origin</span>
+                    <input id="sapCountryOrigin" type="text" placeholder="Example: IT, DE" />
+                  </label>
+
+                  <label class="form-field">
+                    <span>GGN</span>
+                    <input id="sapGgn" type="text" placeholder="SAP export value" />
+                  </label>
+
+                  <label class="form-field">
+                    <span>GLN</span>
+                    <input id="sapGln" type="text" placeholder="SAP export value" />
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>Agency / Owner</span>
+                    <input id="sapOwner" type="text" placeholder="Example: Fruitservice / Bellafrut" />
+                  </label>
+
+                  <label class="form-field">
+                    <span>BP Portal ID</span>
+                    <input id="sapBpPortalId" type="text" placeholder="Example: BP-1204762" />
+                  </label>
+
+                  <label class="form-field">
+                    <span>BP Portal Name</span>
+                    <input id="sapBpPortalName" type="text" placeholder="Example: Euro Fresh Supplier Portal" />
+                  </label>
+                </div>
+
+                <div class="inline-form-actions">
+                  <button class="command-button primary" type="submit">Save Master Data</button>
+                  <button class="command-button" type="button" data-close-form>Cancel</button>
+                </div>
+              </form>
+
+              <div id="sapMasterGrid" class="sap-master-grid"></div>
+            </article>
+          </section>
+          <section id="extra-info" class="tab-panel">
+            <article class="card">
+              <div class="card-title">Supplier Extra Infos</div>
+
+              <div class="extra-info-note">
+                This section stores relationship and company intelligence that does not normally come from SAP:
+                company history, ownership, production structure, customer relationships, and OGL cooperation history.
+              </div>
+
+              <div class="tab-local-actions">
+                <button id="openExtraInfoFormButton" class="command-button primary" type="button" onclick="openExtraInfoForm()">
+                  Edit Supplier Extra Info
+                </button>
+              </div>
+
+              <form id="extraInfoForm" class="inline-form-card" hidden>
+                <div class="inline-form-header">
+                  <div>
+                    <div class="inline-form-title">Edit Supplier Extra Info</div>
+                    <div class="inline-form-subtitle">Update company intelligence for the selected supplier.</div>
+                  </div>
+                  <button class="inline-close-button" type="button" data-close-form>×</button>
+                </div>
+
+                <div class="inline-form-grid">
+                  <label class="form-field wide">
+                    <span>Company history</span>
+                    <textarea id="extraCompanyHistory" rows="3" placeholder="Short supplier background, business history, important milestones..."></textarea>
+                  </label>
+
+                  <label class="form-field">
+                    <span>Year of foundation</span>
+                    <input id="extraYearFoundation" type="text" placeholder="Example: 1998" />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Ownership structure</span>
+                    <input id="extraOwnershipStructure" type="text" placeholder="Example: Family-owned company" />
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>Location</span>
+                    <textarea id="extraLocation" rows="2" placeholder="Headquarters, packing houses, producer locations, maps note..."></textarea>
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>Structure of production</span>
+                    <textarea id="extraProductionStructure" rows="3" placeholder="Direct production, producer network, packing structure, seasonal model..."></textarea>
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>Collaboration with other customers</span>
+                    <textarea id="extraOtherCustomers" rows="2" placeholder="Known customer channels, retail/wholesale relationships, market position..."></textarea>
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>OGL Cooperation History</span>
+                    <textarea id="extraOglHistory" rows="3" placeholder="OGL relationship history, audits, events, approvals, issues, cooperation notes..."></textarea>
+                  </label>
+                </div>
+
+                <div class="inline-form-actions">
+                  <button class="command-button primary" type="submit">Save Extra Info</button>
+                  <button class="command-button" type="button" data-close-form>Cancel</button>
+                </div>
+              </form>
+
+              <div id="extraInfoGrid" class="extra-info-grid"></div>
+            </article>
+          </section>
+          <section id="material-groups" class="tab-panel">
+            <article class="card">
+              <div class="card-title">Material Groups & Origin Details</div>
+
+              <div id="materialSummaryStrip" class="material-summary-strip"></div>
+
+              <div class="material-model-note">
+                Country of origin is shown here at material-group/detail level.
+                This prevents losing information when one supplier has multiple origin countries.
+              </div>
+
+              <div class="material-filters">
+                <label class="filter-control">
+                  <span>Country</span>
+                  <select id="materialCountryFilter">
+                    <option value="">All</option>
+                  </select>
+                </label>
+
+                <label class="filter-control">
+                  <span>Agency</span>
+                  <select id="materialAgencyFilter">
+                    <option value="">All</option>
+                  </select>
+                </label>
+
+                <label class="filter-control">
+                  <span>Status</span>
+                  <select id="materialStatusFilter">
+                    <option value="">All</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </label>
+
+                <button id="clearMaterialFilters" class="clear-filter-button" type="button">
+                  Clear filters
+                </button>
+              </div>
+
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Material Group</th>
+                      <th>Country</th>
+                      <th>Agency</th>
+                      <th>Status LIDL</th>
+                      <th>Status OGL</th>
+                      <th>Active / Inactive</th>
+                    </tr>
+                  </thead>
+                  <tbody id="materialGroupsBody"></tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+
+          <section id="contacts" class="tab-panel">
+            <article class="card">
+              <div class="card-title">Supplier Contacts</div>
+
+              <div id="contactSummaryStrip" class="contact-summary-strip"></div>
+              <div class="tab-local-actions">
+                <button id="openContactFormButton" class="command-button primary" type="button" onclick="openContactForm()">
+                  + Add Contact
+                </button>
+              </div>
+
+              <form id="addContactForm" class="inline-form-card" hidden>
+                <div class="inline-form-header">
+                  <div>
+                    <div id="contactFormTitle" class="inline-form-title">Add Supplier Contact</div>
+                    <div id="contactFormSubtitle" class="inline-form-subtitle">Create a new contact for the selected supplier.</div>
+                  </div>
+                  <button class="inline-close-button" type="button" data-close-form>×</button>
+                </div>
+
+                <div class="inline-form-grid">
+                  <label class="form-field">
+                    <span>Name Surname</span>
+                    <input id="newContactName" type="text" placeholder="Example: Anna Rossi" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Role</span>
+                    <input id="newContactRole" type="text" placeholder="Example: Quality Manager" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Department</span>
+                    <input id="newContactDepartment" type="text" placeholder="Example: Quality Assurance" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>E-Mail</span>
+                    <input id="newContactEmail" type="email" placeholder="name@supplier.com" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Phone</span>
+                    <input id="newContactPhone" type="text" placeholder="+39 ..." />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Approval Status</span>
+                    <select id="newContactStatus">
+                      <option value="Approved">Approved</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Needs Review">Needs Review</option>
+                    </select>
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>Cultural infos</span>
+                    <textarea id="newContactCulturalInfos" rows="3" placeholder="Language preference, communication style, relationship notes..."></textarea>
+                  </label>
+                </div>
+
+                <div class="inline-form-actions">
+                  <button id="saveContactButton" class="command-button primary" type="submit">Save Contact</button>
+                  <button class="command-button" type="button" data-close-form>Cancel</button>
+                </div>
+              </form>
+              <div class="contact-model-note">
+                Supplier contacts are linked to the supplier through Supplier ID. 
+                Department coverage helps SRM teams check whether commercial, quality, and logistics ownership is complete.
+              </div>
+
+              <div class="contact-filters">
+                <label class="filter-control">
+                  <span>Department</span>
+                  <select id="contactDepartmentFilter">
+                    <option value="">All</option>
+                  </select>
+                </label>
+
+                <label class="filter-control">
+                  <span>Approval Status</span>
+                  <select id="contactStatusFilter">
+                    <option value="">All</option>
+                  </select>
+                </label>
+
+                <button id="clearContactFilters" class="clear-filter-button" type="button">
+                  Clear filters
+                </button>
+              </div>
+
+              <div id="contactsGrid" class="contact-grid"></div>
+            </article>
+          </section>
+          <section id="activities" class="tab-panel">
+            <article class="card">
+              <div class="card-title">Relationship Traces</div>
+
+              <div id="activitySummaryStrip" class="activity-summary-strip"></div>
+
+              <div class="tab-local-actions trace-actions">
+                <button id="openBigTraceFormButton" class="command-button primary" type="button" onclick="openActivityForm('Big')">
+                  + Add Big Contact Trace
+                </button>
+                <button id="openSmallTraceFormButton" class="command-button" type="button" onclick="openActivityForm('Small')">
+                  + Add Small Contact Trace
+                </button>
+              </div>
+
+              <form id="addActivityForm" class="inline-form-card" hidden>
+                <input id="newActivityTraceCategory" type="hidden" value="Small" />
+
+                <div class="inline-form-header">
+                  <div>
+                    <div id="activityFormTitle" class="inline-form-title">Add Contact Trace</div>
+                    <div id="activityFormSubtitle" class="inline-form-subtitle">Create a new relationship trace for the selected supplier.</div>
+                  </div>
+                  <button class="inline-close-button" type="button" data-close-form>×</button>
+                </div>
+
+                <div class="inline-form-grid">
+                  <label class="form-field">
+                    <span>Activity</span>
+                    <input id="newActivityTitle" type="text" placeholder="Example: Audit follow-up" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Date</span>
+                    <input id="newActivityDate" type="text" placeholder="Example: Jul 2026" required />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Trace Type</span>
+                    <select id="newActivityType"></select>
+                  </label>
+
+                  <label class="form-field">
+                    <span>Status</span>
+                    <select id="newActivityStatus">
+                      <option value="Completed">Completed</option>
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Needs Review">Needs Review</option>
+                    </select>
+                  </label>
+
+                  <label class="form-field">
+                    <span>People involved / Contact</span>
+                    <input id="newActivityPeople" type="text" placeholder="Example: SRM Team, Supplier Contact" />
+                  </label>
+
+                  <label class="form-field">
+                    <span>Purpose</span>
+                    <input id="newActivityPurpose" type="text" placeholder="Example: Clarify supplier data" required />
+                  </label>
+
+                  <label class="form-field wide">
+                    <span>Notes</span>
+                    <textarea id="newActivityNotes" rows="3" placeholder="Write the trace record notes..." required></textarea>
+                  </label>
+                </div>
+
+                <div class="inline-form-actions">
+                  <button id="saveActivityButton" class="command-button primary" type="submit">Save Trace</button>
+                  <button class="command-button" type="button" data-close-form>Cancel</button>
+                </div>
+              </form>
+              <div class="activity-model-note">
+                Relationship traces are split into big contacts and small contacts. Big traces cover Lidl events, OGL conferences, audits, and projects. Small traces cover calls, emails, visits, and routine follow-ups.
+              </div>
+
+              <div class="activity-filters">
+                <label class="filter-control">
+                  <span>Activity Type</span>
+                  <select id="activityTypeFilter">
+                    <option value="">All</option>
+                  </select>
+                </label>
+
+                <label class="filter-control">
+                  <span>Status</span>
+                  <select id="activityStatusFilter">
+                    <option value="">All</option>
+                  </select>
+                </label>
+
+                <button id="clearActivityFilters" class="clear-filter-button" type="button">
+                  Clear filters
+                </button>
+              </div>
+
+              <div class="trace-section-grid">
+                <section class="trace-list-card">
+                  <div class="trace-list-header">
+                    <div>
+                      <div class="trace-list-title">Big Contact Traces</div>
+                      <div class="trace-list-subtitle">Lidl events, OGL conferences, audits, projects</div>
+                    </div>
+                    <span id="bigTraceCount" class="trace-count-pill">0</span>
+                  </div>
+                  <ul id="bigTraceTimelineFull" class="timeline activity-timeline-full"></ul>
+                </section>
+
+                <section class="trace-list-card">
+                  <div class="trace-list-header">
+                    <div>
+                      <div class="trace-list-title">Small Contact Traces</div>
+                      <div class="trace-list-subtitle">Calls, emails, visits, routine follow-ups</div>
+                    </div>
+                    <span id="smallTraceCount" class="trace-count-pill">0</span>
+                  </div>
+                  <ul id="smallTraceTimelineFull" class="timeline activity-timeline-full"></ul>
+                </section>
+              </div>
+            </article>
+          </section>
+          <section id="performance" class="tab-panel">
+            <div class="kpi-grid">
+              <article class="kpi-card accent-blue">
+                <div class="kpi-label">Material groups</div>
+                <div id="kpiMaterials" class="kpi-value">-</div>
+              </article>
+
+              <article class="kpi-card accent-green">
+                <div class="kpi-label">Countries</div>
+                <div id="kpiCountries" class="kpi-value">-</div>
+              </article>
+
+              <article class="kpi-card accent-amber">
+                <div class="kpi-label">Contacts</div>
+                <div id="kpiContacts" class="kpi-value">-</div>
+              </article>
+
+              <article class="kpi-card accent-purple">
+                <div class="kpi-label">Risk level</div>
+                <div id="kpiRisk" class="kpi-value">-</div>
+              </article>
+            </div>
+
+            <div class="chart-grid">
+              <div class="chart-card">
+                <div class="chart-title">Material Groups by Origin Country</div>
+                <canvas id="countryChart"></canvas>
+              </div>
+
+              <div class="chart-card">
+                <div class="chart-title">Contact Approval Status</div>
+                <canvas id="approvalChart"></canvas>
+              </div>
+
+              <div class="chart-card">
+                <div class="chart-title">Contacts by Department / Role</div>
+                <canvas id="departmentChart"></canvas>
+              </div>
+
+              <div class="chart-card">
+                <div class="chart-title">SRM Activities Over Time</div>
+                <canvas id="activityChart"></canvas>
+              </div>
+            </div>
+
+            <div class="table-grid">
+              <article class="card">
+                <div class="card-title">SRM Summary</div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Note</th>
+                      </tr>
+                    </thead>
+                    <tbody id="performanceSummaryBody"></tbody>
+                  </table>
+                </div>
+              </article>
+
+              <article class="card">
+                <div class="card-title">Recent SRM Activity Summary</div>
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                        <th>Comment</th>
+                      </tr>
+                    </thead>
+                    <tbody id="scorecardBody"></tbody>
+                  </table>
+                </div>
+              </article>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="script.js?v=20260630-edit-actions"></script>
+  </body>
+</html>
