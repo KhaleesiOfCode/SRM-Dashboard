@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Supplier 360 SRM Dashboard</title>
+    <title>Supplier 360 SRM Demo</title>
     <link rel="stylesheet" href="style.css?v=20260630-edit-actions" />
   </head>
 
@@ -14,7 +14,7 @@
           <div class="brand-icon">S</div>
           <div>
             <div class="brand-title">Supplier 360</div>
-            <div class="brand-subtitle">SRM / Supplier Management</div>
+            <div class="brand-subtitle">SRM Demo / Supplier Management</div>
           </div>
         </div>
 
@@ -24,8 +24,8 @@
         </label>
 
         <div class="topbar-actions">
-          <!-- <button class="action-button">+ New</button> -->
-          <div class="user-chip">AL</div>
+          <button class="action-button">+ New</button>
+          <div class="user-chip">DU</div>
         </div>
       </header>
 
@@ -49,9 +49,9 @@
         </aside>
 
         <main class="content-area">
-          <!-- <section class="supplier-commandbar" aria-label="Supplier command bar">
+          <section class="supplier-commandbar" aria-label="Supplier command bar">
             <div class="command-actions">
-              <button class="command-button primary" type="button" data-command="edit-supplier">
+              <!-- <button class="command-button primary" type="button" data-command="edit-supplier">
                 Edit Supplier
               </button>
 
@@ -61,7 +61,7 @@
 
               <button class="command-button" type="button" data-command="add-activity">
                 Add Activity
-              </button>
+              </button> -->
 
               <button class="command-button" type="button" data-command="export-summary">
                 Export SRM Summary
@@ -75,7 +75,7 @@
             <div id="commandFeedback" class="command-feedback">
               Select an action to continue.
             </div>
-          </section> -->
+          </section>
           
           <section class="profile-card">
             <div class="profile-heading">
@@ -220,17 +220,17 @@
 
                   <label class="form-field wide">
                     <span>Agency / Owner</span>
-                    <input id="sapOwner" type="text" placeholder="Example: Fruitservice / Bellafrut" />
+                    <input id="sapOwner" type="text" placeholder="Example: Demo Produce Group / Partner Unit" />
                   </label>
 
                   <label class="form-field">
                     <span>BP Portal ID</span>
-                    <input id="sapBpPortalId" type="text" placeholder="Example: BP-1204762" />
+                    <input id="sapBpPortalId" type="text" placeholder="Example: BP-SUP-4000" />
                   </label>
 
                   <label class="form-field">
                     <span>BP Portal Name</span>
-                    <input id="sapBpPortalName" type="text" placeholder="Example: Euro Fresh Supplier Portal" />
+                    <input id="sapBpPortalName" type="text" placeholder="Example: Continental Fresh Portal" />
                   </label>
                 </div>
 
@@ -249,7 +249,7 @@
 
               <div class="extra-info-note">
                 This section stores relationship and company intelligence that does not normally come from SAP:
-                company history, ownership, production structure, customer relationships, and OGL cooperation history.
+                company history, ownership, production structure, customer relationships, and Partner Network cooperation history.
               </div>
 
               <div class="tab-local-actions">
@@ -299,8 +299,8 @@
                   </label>
 
                   <label class="form-field wide">
-                    <span>OGL Cooperation History</span>
-                    <textarea id="extraOglHistory" rows="3" placeholder="OGL relationship history, audits, events, approvals, issues, cooperation notes..."></textarea>
+                    <span>Partner Cooperation History</span>
+                    <textarea id="extraPartnerHistory" rows="3" placeholder="Partner relationship history, audits, events, approvals, issues, cooperation notes..."></textarea>
                   </label>
                 </div>
 
@@ -360,8 +360,8 @@
                       <th>Material Group</th>
                       <th>Country</th>
                       <th>Agency</th>
-                      <th>Status LIDL</th>
-                      <th>Status OGL</th>
+                      <th>Retailer Status</th>
+                      <th>Partner Status</th>
                       <th>Active / Inactive</th>
                     </tr>
                   </thead>
@@ -394,7 +394,7 @@
                 <div class="inline-form-grid">
                   <label class="form-field">
                     <span>Name Surname</span>
-                    <input id="newContactName" type="text" placeholder="Example: Anna Rossi" required />
+                    <input id="newContactName" type="text" placeholder="Example: Anna Wilson" required />
                   </label>
 
                   <label class="form-field">
@@ -539,7 +539,7 @@
                 </div>
               </form>
               <div class="activity-model-note">
-                Relationship traces are split into big contacts and small contacts. Big traces cover Lidl events, OGL conferences, audits, and projects. Small traces cover calls, emails, visits, and routine follow-ups.
+                Relationship traces are split into big contacts and small contacts. Big traces cover Retailer events, Partner conferences, audits, and projects. Small traces cover calls, emails, visits, and routine follow-ups.
               </div>
 
               <div class="activity-filters">
@@ -567,7 +567,7 @@
                   <div class="trace-list-header">
                     <div>
                       <div class="trace-list-title">Big Contact Traces</div>
-                      <div class="trace-list-subtitle">Lidl events, OGL conferences, audits, projects</div>
+                      <div class="trace-list-subtitle">Retailer events, Partner conferences, audits, projects</div>
                     </div>
                     <span id="bigTraceCount" class="trace-count-pill">0</span>
                   </div>
